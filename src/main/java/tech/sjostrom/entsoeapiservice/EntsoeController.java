@@ -16,7 +16,7 @@ public class EntsoeController {
 
     @GetMapping("/fetch")
     public String fetchNow() {
-        producerTemplate.sendBody("direct:entsoe-fetch-route", null);
+        producerTemplate.sendBody("direct:fetch-now", null);
         return "Fetch triggered";
     }
 }
