@@ -52,6 +52,13 @@
             <version>4.18.0</version>
         </dependency>
 
+        <!-- Quartz -->
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-quartz</artifactId>
+            <version>4.18.0</version>
+        </dependency>
+
         <!-- Camel JMS for ActiveMQ -->
         <dependency>
             <groupId>org.apache.camel.springboot</groupId>

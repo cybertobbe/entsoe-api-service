@@ -19,8 +19,8 @@ public class EntsoeRoute extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
-        // Fetch prices every 30 seconds (for testing - change to 3600000 for hourly)
-        from("timer:fetch-prices?period=360000")
+        //Trigger 00.10 every night
+        from("quartz:entsoe/fetch-prices?cron=0+10+0+*+*+?")
                 .routeId("entsoe-fetch-route")
                 .process(exchange -> {
                     LocalDate today = LocalDate.now();
