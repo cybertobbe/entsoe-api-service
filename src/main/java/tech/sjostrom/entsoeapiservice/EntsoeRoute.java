@@ -20,7 +20,7 @@ public class EntsoeRoute extends RouteBuilder {
     public void configure() throws Exception {
 
         //Trigger 00.10 every night
-        from("quartz:entsoe/fetch-prices?cron=0+10+0+*+*+?")
+        from("quartz:entsoe/fetch-prices?cron=0+15+13+*+*+?")
                 .routeId("entsoe-fetch-route")
                 .process(exchange -> {
                     LocalDate today = LocalDate.now();
