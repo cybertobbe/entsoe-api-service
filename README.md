@@ -1,3 +1,10 @@
+## Architecture
+
+The system consists of multiple services:
+
+ENTSO-E API → API service → Database service → Price analyzer → Frontend
+
+
 # entsoe-api-service
 
 ## Overview
