@@ -1,6 +1,7 @@
 package tech.sjostrom.entsoeapiservice;
 
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.http.base.HttpOperationFailedException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +20,28 @@ public class EntsoeRoute extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
-        //Trigger 00.10 every night
+
+            // Retry-strategi för HTTP-fel (503, 502, 500, etc.)
+            onException(HttpOperationFailedException.class)
+                    .maximumRedeliveries(5)               // Max 5 retries
+                    .redeliveryDelay(300000)              // Wait 10 min between retries
+                    .backOffMultiplier(1.5)               // Increase sleep time with 50% between each retry
+                    .maximumRedeliveryDelay(1800000)      // Max 30 min between retries
+                    .retryAttemptedLogLevel(org.apache.camel.LoggingLevel.WARN)
+                    .retriesExhaustedLogLevel(org.apache.camel.LoggingLevel.ERROR)
+                    .logRetryAttempted(true)
+                    .logExhausted(true)
+                    .logExhaustedMessageHistory(true)
+                    .onWhen(exchange -> {
+                        HttpOperationFailedException ex = exchange.getProperty(
+                                org.apache.camel.Exchange.EXCEPTION_CAUGHT,
+                                HttpOperationFailedException.class
+                        );
+                        // Retry on 5xx-fel (server-error) only
+                        return ex != null && ex.getStatusCode() >= 500;
+                    });
+
+        //Trigger 13.15 every day
         from("quartz:entsoe/fetch-prices?cron=0+15+13+*+*+?")
                 .routeId("entsoe-fetch-route")
                 .process(exchange -> {
